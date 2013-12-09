@@ -45,11 +45,6 @@ public class CrimeListFragment extends ListFragment {
 		startActivityForResult(intent, 0);
 	}
 	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
-	}
-	
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
 		public CrimeAdapter(ArrayList<Crime> c) {
 			super(getActivity(), android.R.layout.simple_list_item_1, c);	//To properly hook up dataset of Crimes
@@ -85,4 +80,9 @@ public class CrimeListFragment extends ListFragment {
 //		super.onResume();
 //		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();			
 //	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {	//For startActivityForResult(Intent)
+		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
+	}
 }

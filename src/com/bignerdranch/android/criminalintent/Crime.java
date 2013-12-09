@@ -34,6 +34,9 @@ public class Crime {
 		
 		return date_string;
 	}
+	public Date getDateObj() {
+		return mDate;
+	}
 	
 	public void setDate(Date date) {
 		mDate = date;
