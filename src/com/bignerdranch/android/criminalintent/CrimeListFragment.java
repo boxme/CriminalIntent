@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 public class CrimeListFragment extends ListFragment {
 	private ArrayList<Crime> mCrimes;
-	private static final String TAG = "CrimeListFragment";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,14 +41,18 @@ public class CrimeListFragment extends ListFragment {
 //		Intent intent = new Intent(getActivity(), CrimeActivity.class);		//getActivity in a Fragment returns the Activity
 																			//it is associated with
 		intent.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getID());		//Tell CrimeFragment which Crime to display
-		startActivity(intent);	
-//		startActivityForResult(intent, requestCode);
+//		startActivity(intent);	
+		startActivityForResult(intent, 0);
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
 	}
 	
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
-		
 		public CrimeAdapter(ArrayList<Crime> c) {
-			super(getActivity(), 0, c);					//To properly hook up dataset of Crimes
+			super(getActivity(), android.R.layout.simple_list_item_1, c);	//To properly hook up dataset of Crimes
 		}
 		
 		@Override
@@ -77,9 +80,9 @@ public class CrimeListFragment extends ListFragment {
 		}
 	}
 	
-	@Override
-	public void onResume() {
-		super.onResume();
-		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();			//
-	}
+//	@Override
+//	public void onResume() {										//for startActivity(Intent)
+//		super.onResume();
+//		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();			
+//	}
 }
