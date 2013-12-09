@@ -47,7 +47,10 @@ public final class R {
         public static final int crime_title=0x7f060006;
         public static final int crime_title_hint=0x7f060002;
         public static final int crime_title_label=0x7f060003;
+        public static final int date_picker_option=0x7f060009;
         public static final int date_picker_title=0x7f060007;
+        public static final int time_picker_option=0x7f06000a;
+        public static final int time_picker_title=0x7f060008;
         public static final int title_activity_crime=0x7f060001;
     }
     public static final class style {

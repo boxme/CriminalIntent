@@ -74,7 +74,7 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 		
-		mDateButton = (Button) view.findViewById(R.id.crime_date);				//Set date button, disabled for now
+		mDateButton = (Button) view.findViewById(R.id.crime_date);				
 		updateDate();
 //		mDateButton.setEnabled(false);
 		mDateButton.setOnClickListener(new View.OnClickListener() {
@@ -82,10 +82,14 @@ public class CrimeFragment extends Fragment {
 			public void onClick(View v) {
 				FragmentManager fm = getActivity()
 									.getSupportFragmentManager();
-				DatePickerFragment dialog = DatePickerFragment
-											.newInstance(mCrime.getDateObj());
-				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);		//Set CrimeFragment the target fragment
-				dialog.show(fm, DIALOG_DATE);									//Set tag on DialogFragment in FragmentManager
+//				DatePickerFragment dialog = DatePickerFragment
+//											.newInstance(mCrime.getDateObj());
+//				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);		//Set CrimeFragment the target fragment
+//				dialog.show(fm, DIALOG_DATE);									//Set tag on DialogFragment in FragmentManager
+				
+				PickerFragment dialog = PickerFragment.newInstance(mCrime.getDateObj());
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+				dialog.show(fm, DIALOG_DATE);
 			}
 		});
 		
