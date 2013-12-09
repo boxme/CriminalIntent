@@ -2,9 +2,9 @@ package com.bignerdranch.android.criminalintent;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -33,9 +33,17 @@ public class CrimeListFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int pos, long id) {		//Click on the item in ListView
-//		Crime crime = (Crime) getListAdapter().getItem(pos);	//ListFragment method to return the adapter 
-		Crime crime = ((CrimeAdapter) getListAdapter()).getItem(pos);
-		Log.d(TAG, crime.getTitle() + " was clicked");			//that's set on ListFragment's listview
+//		Crime crime = (Crime) getListAdapter().getItem(pos);				//ListFragment method to return the adapter 
+		Crime crime = ((CrimeAdapter) getListAdapter()).getItem(pos);		//Get the Crime from the adapter
+		
+		/*Start CrimePagerActivity*/
+		Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
+		/*Start CrimeActivity*/
+//		Intent intent = new Intent(getActivity(), CrimeActivity.class);		//getActivity in a Fragment returns the Activity
+																			//it is associated with
+		intent.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getID());		//Tell CrimeFragment which Crime to display
+		startActivity(intent);	
+//		startActivityForResult(intent, requestCode);
 	}
 	
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
@@ -67,5 +75,11 @@ public class CrimeListFragment extends ListFragment {
 			
 			return convertView;
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();			//
 	}
 }
