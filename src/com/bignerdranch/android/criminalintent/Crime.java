@@ -30,7 +30,8 @@ public class Crime {
 	public String getDate() {
 		String[] date_array = mDate.toString().split(" ");
 		String date_string = date_array[0] + ", " + date_array[1] + " " + 
-							 date_array[2] + ", " + date_array[date_array.length-1] + ".";
+							 date_array[2] + ", " + date_array[date_array.length-1] + " " +
+							 date_array[3] + ".";
 		
 		return date_string;
 	}

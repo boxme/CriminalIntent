@@ -82,14 +82,14 @@ public class CrimeFragment extends Fragment {
 			public void onClick(View v) {
 				FragmentManager fm = getActivity()
 									.getSupportFragmentManager();
-//				DatePickerFragment dialog = DatePickerFragment
-//											.newInstance(mCrime.getDateObj());
-//				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);		//Set CrimeFragment the target fragment
-//				dialog.show(fm, DIALOG_DATE);									//Set tag on DialogFragment in FragmentManager
+				DatePickerFragment dialog = DatePickerFragment
+											.newInstance(mCrime.getDateObj());
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);		//Set CrimeFragment the target fragment
+				dialog.show(fm, DIALOG_DATE);									//Set tag on DialogFragment in FragmentManager
 				
-				PickerFragment dialog = PickerFragment.newInstance(mCrime.getDateObj());
-				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-				dialog.show(fm, DIALOG_DATE);
+//				PickerFragment dialog = PickerFragment.newInstance(mCrime.getDateObj());
+//				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+//				dialog.show(fm, DIALOG_DATE);
 			}
 		});
 		

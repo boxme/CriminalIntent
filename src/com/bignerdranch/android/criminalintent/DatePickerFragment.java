@@ -47,7 +47,7 @@ public class DatePickerFragment extends DialogFragment {
 		datePicker.init(year, month, day, new OnDateChangedListener() {
 			@Override
 			public void onDateChanged(DatePicker view, int year, int month, int day) {
-				//Translate year, month, day into Date object using a callendar
+				//Translate year, month, day into Date object using a calendar
 				mDate = new GregorianCalendar(year, month, day).getTime();
 				
 				//Update arguments to preserve selected value on rotation of phone
