@@ -3,14 +3,18 @@ package com.bignerdranch.android.criminalintent;
 import java.util.Date;
 import java.util.UUID;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,14 +50,23 @@ public class CrimeFragment extends Fragment {
 						.getSerializable(EXTRA_CRIME_ID);
 //		mCrime = new Crime();									//Fragment.onCreate does not inflate the fragment's view
 		mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);	//Get the crime from CrimeLab using the crimeId.
+		
+		setHasOptionsMenu(true);								//CrimeFragment will also implement option menu
 	}
 
+	@TargetApi(11)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, 		//This is the method to inflate the fragment's view
 			                 Bundle savedInstanceState) {
 		
 		//layout res ID, fragment's parent, whether to add inflated view to parent's view
 		View view  = inflater.inflate(R.layout.fragment_crime, parent, false);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			if (NavUtils.getParentActivityName(getActivity()) != null) {		//If there exists a parent Activity
+				getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);   //Set App icon as a button
+			}
+		}
 		
 		mTitleField = (EditText) view.findViewById(R.id.crime_title);			//Wire up
 		mTitleField.setText(mCrime.getTitle());
@@ -118,5 +131,18 @@ public class CrimeFragment extends Fragment {
 	
 	private void updateDate() {
 		mDateButton.setText(mCrime.getDate());
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (NavUtils.getParentActivityName(getActivity()) != null) {	//If there exists a parent activity
+				NavUtils.navigateUpFromSameTask(getActivity());				//Go back up to that parent activity
+			}
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }
