@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +34,7 @@ public class CrimeFragment extends Fragment {
 			"com.bignerdranch.android.criminalintent.crime_id";
 	private static final String DIALOG_DATE = "date";
 	private static final int REQUEST_DATE = 0;
+	private static final String TAG = "CrimeFragment";
 	
 	public static CrimeFragment newInstance(UUID crimeId) {     //Use this to instantiate CrimeFragment instead of its constructor
 		Bundle args = new Bundle();
@@ -149,6 +152,14 @@ public class CrimeFragment extends Fragment {
 	@Override
 	public void onPause() {													//Save the data whenever the fragment is paused.
 		super.onPause();	
-		CrimeLab.get(getActivity()).saveCrime();							
+		CrimeLab.get(getActivity()).saveCrime();
+		
+		//Saved to external storage
+		File file = null;
+		if ((file = getActivity().getExternalFilesDir(null)) != null) {		//Check to see if external storage is available
+			CrimeLab.get(getActivity()).saveToExternal();
+		} else {
+			Log.d(TAG, "External storage not available");
+		}
 	}
 }

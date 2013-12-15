@@ -21,10 +21,12 @@ public class CrimeLab {
 	
 	private CrimeLab(Context appContext) {
 		mAppContext = appContext;
+		mSerializer = new CriminalIntentJSONSerializer(mAppContext, FILENAME);
 //		mCrimes = new ArrayList<Crime>();
 		
 		try {
 			mCrimes = mSerializer.loadCrimes();
+			Log.d(TAG, "Loading crimes from file");
 		} catch (Exception e) {
 			mCrimes = new ArrayList<Crime>();
 			Log.d(TAG, "Error loading crimes: ", e);
@@ -62,6 +64,17 @@ public class CrimeLab {
 		} catch (Exception e) {
 			Log.d(TAG, "Error saving crimes: ", e);				//Logging the error for failing to save
 			return false;										//In real life, you should alert the user if the saving fails.
+		}
+	}
+	
+	public boolean saveToExternal() {
+		try {
+			mSerializer.savedToExternal(mCrimes);
+			Log.d(TAG, "crime saved to external file");
+			return true;
+		} catch (Exception e) {
+			Log.d(TAG, "Error saving crimes to external: ", e);
+			return false;
 		}
 	}
 }
