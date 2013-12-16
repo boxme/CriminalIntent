@@ -16,6 +16,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,6 +146,10 @@ public class CrimeFragment extends Fragment {
 				NavUtils.navigateUpFromSameTask(getActivity());				//Go back up to that parent activity
 			}
 			return true;
+		case R.id.menu_item_delete_crime:
+			CrimeLab.get(getActivity()).deleteCrime(mCrime);
+			NavUtils.navigateUpFromSameTask(getActivity());					//Go back to the parent activity upon deletion
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -161,5 +167,11 @@ public class CrimeFragment extends Fragment {
 		} else {
 			Log.d(TAG, "External storage not available");
 		}
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.crime_list_item_context, menu);
 	}
 }
