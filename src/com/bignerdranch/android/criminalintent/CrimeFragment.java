@@ -1,3 +1,7 @@
+/*
+ * Starts CrimeCameraActivity
+ */
+
 package com.bignerdranch.android.criminalintent;
 
 import java.io.File;
@@ -7,6 +11,7 @@ import java.util.UUID;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +31,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 public class CrimeFragment extends Fragment {
 	private Crime mCrime;
@@ -37,6 +43,8 @@ public class CrimeFragment extends Fragment {
 	private static final String DIALOG_DATE = "date";
 	private static final int REQUEST_DATE = 0;
 	private static final String TAG = "CrimeFragment";
+	
+	private ImageButton mPhotoButton;
 	
 	public static CrimeFragment newInstance(UUID crimeId) {     //Use this to instantiate CrimeFragment instead of its constructor
 		Bundle args = new Bundle();
@@ -120,6 +128,22 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 		
+		mPhotoButton = (ImageButton) view.findViewById(R.id.crime_imageButton);
+		mPhotoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), CrimeCameraActivity.class);
+				startActivity(intent);
+			}
+		});
+		
+		//If camera is not available, disable camera functionality
+		PackageManager pm = getActivity().getPackageManager();
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) &&
+				!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
+			mPhotoButton.setEnabled(false);
+		}
+		
 		return view;															//Return the inflated view to the hosting activity
 	}
 	
@@ -148,7 +172,7 @@ public class CrimeFragment extends Fragment {
 			return true;
 		case R.id.menu_item_delete_crime:
 			CrimeLab.get(getActivity()).deleteCrime(mCrime);
-			NavUtils.navigateUpFromSameTask(getActivity());					//Go back to the parent activity upon deletion
+			getActivity().finish();											//Go back to the parent activity upon deletion
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

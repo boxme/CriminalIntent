@@ -6,6 +6,12 @@
     
     <uses-permission 
         android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+    <uses-permission 
+        android:name="android.permission.CAMERA" />
+    
+    <uses-feature 
+        android:name="android.hardware.CAMERA" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -26,8 +32,14 @@
         <activity 
             android:name=".CrimePagerActivity" 
             android:label="@string/app_name" >
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data 
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CrimeListActivity" />
+        </activity>
+        <activity 
+            android:name=".CrimeCameraActivity"
+            android:screenOrientation="landscape"
+            android:label="@string/app_name" >
         </activity>
     </application>
 

@@ -1,3 +1,6 @@
+/*
+ * CrimeListFragment will start the CrimePagerActivity
+ */
 package com.bignerdranch.android.criminalintent;
 
 import java.util.ArrayList;
