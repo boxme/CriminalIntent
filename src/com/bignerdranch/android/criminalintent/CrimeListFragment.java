@@ -254,6 +254,7 @@ public class CrimeListFragment extends ListFragment {
 		
 		switch (item.getItemId()) {
 		case R.id.menu_item_delete_crime:											//Only one ID of context menu here to consider
+			deletePhoto(crime);
 			CrimeLab.get(getActivity()).deleteCrime(crime);
 			adapter.notifyDataSetChanged();
 			return true;
@@ -269,5 +270,11 @@ public class CrimeListFragment extends ListFragment {
 		intent.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getID());			//Tell CrimePager to tell which crime to show
 		startActivityForResult(intent, 0);										//in CrimeFragment
 
+	}
+	
+	private void deletePhoto(Crime crime) {
+		if (crime.getPhoto() != null) {
+			getActivity().deleteFile(crime.getPhoto().getFilename());
+		}
 	}
 }

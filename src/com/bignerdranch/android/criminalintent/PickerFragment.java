@@ -53,14 +53,14 @@ public class PickerFragment extends DialogFragment {
 		.create();
 	}
 	
-	private void startDialog(DialogFragment dialog) {
+	private void startDialog(DialogFragment dialog) {					//Procedure to pass information to Dialogs 
 		FragmentManager fm = getActivity()
 				.getSupportFragmentManager();
 		dialog.setTargetFragment(this, REQUEST_DATE);
 		dialog.show(fm, DIALOG_DATE);
 	}
 	
-	private void sendResult(int resultCode) {
+	private void sendResult(int resultCode) {							//Always return result using an Intent
 		if (getTargetFragment() == null) return;
 		
 		Intent intent = new Intent();

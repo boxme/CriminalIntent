@@ -13,12 +13,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -33,6 +37,7 @@ public class CrimeCameraFragment extends Fragment {
 	private Camera mCamera;
 	private SurfaceView mSurfaceView;
 	private View mProgressContainer;
+	private OrientationEventListener mOrientationEventListener;
 	
 	// The two of three parameters of public final void CAMERA.takePicture();
 	private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
@@ -115,10 +120,33 @@ public class CrimeCameraFragment extends Fragment {
 					Log.e(TAG, "Error setting up preview display", e);
 				}
 			}
+			
 			@Override
 			public void surfaceChanged(SurfaceHolder holder, int format, int width,	//Tell Surface's client how big is the drawing
 					int height) {													//area
 				if (mCamera == null) return;
+				
+				//Set the orientation of the camera
+				mOrientationEventListener = new OrientationEventListener(getActivity(), SensorManager.SENSOR_DELAY_NORMAL) {
+					@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+					@Override
+					public void onOrientationChanged(int orientation) {
+						if (mCamera == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD)
+							return;
+						
+						CameraInfo info = new CameraInfo();
+						Camera.getCameraInfo(CameraInfo.CAMERA_FACING_BACK, info);
+						orientation = (orientation + 45) / 90 * 90;
+						int rotation = 0;
+						rotation = (info.orientation + orientation) % 360;
+						
+						Parameters parameters = mCamera.getParameters();
+						parameters.setRotation(rotation);
+						mCamera.setParameters(parameters);
+						mCamera.setDisplayOrientation(rotation);
+					}
+				};
+				mOrientationEventListener.enable();
 				
 				//The surface has changed size; update the camera preview size
 				Camera.Parameters parameters = mCamera.getParameters();			//Returns current settings of camera
@@ -129,8 +157,8 @@ public class CrimeCameraFragment extends Fragment {
 				// Find the best supported picture size to be taken
 				size = getBestSupportedSize(parameters.getSupportedPictureSizes(), width, height);
 				parameters.setPictureSize(size.width, size.height);
-				
 				mCamera.setParameters(parameters);
+				
 				try {
 					mCamera.startPreview();										//Starts drawing frames on the Surface
 				} catch (Exception e) {
@@ -172,6 +200,10 @@ public class CrimeCameraFragment extends Fragment {
 		if (mCamera != null) {
 			mCamera.release();											//Close the camera
 			mCamera = null;
+		}
+		if (mOrientationEventListener != null) {
+			mOrientationEventListener.disable();
+			mOrientationEventListener = null;
 		}
 	}
 	

@@ -23,6 +23,7 @@ public class Crime {
 		//Generate unique identifier
 		mID = UUID.randomUUID();
 		mDate = new Date();
+		mPhoto = null;
 	}
 	
 	public Crime(JSONObject json) throws JSONException {	//Loading back from json object

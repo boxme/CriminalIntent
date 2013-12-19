@@ -4,7 +4,6 @@
 
 package com.bignerdranch.android.criminalintent;
 
-import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,6 +20,7 @@ import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +49,7 @@ public class CrimeFragment extends Fragment {
 	
 	private ImageButton mPhotoButton;
 	private ImageView mPhotoView;
+	private ActionMode.Callback mActionModeCallback;
 	
 	public static CrimeFragment newInstance(UUID crimeId) {     //Use this to instantiate CrimeFragment instead of its constructor
 		Bundle args = new Bundle();
@@ -159,7 +160,50 @@ public class CrimeFragment extends Fragment {
 				FragmentManager fm = getActivity().getSupportFragmentManager();
 				String path = getActivity().getFileStreamPath(photo.getFilename()).getAbsolutePath();
 				ImageFragment.newInstance(path).show(fm, DIALOG_IMAGE);
-				Log.d(TAG, "Photo shown");
+			}
+		});
+		
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			registerForContextMenu(mPhotoView);
+		} else {
+			mActionModeCallback = new ActionMode.Callback() {
+				
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.crime_fragment_context_menu, menu);
+					return true;
+				}
+				
+				@Override
+				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+					return false;
+				}
+				
+				@Override
+				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+					switch (item.getItemId()) {
+					case R.id.menu_item_delete_photo:
+						deleteOldPhoto();
+						mode.finish();
+						return true;
+					default:
+						return false;
+					}
+				}
+				
+				@Override
+				public void onDestroyActionMode(ActionMode mode) {
+					// TODO Auto-generated method stub		
+				}
+			};
+		}
+		
+		mPhotoView.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				getActivity().startActionMode(mActionModeCallback);
+				return true;
 			}
 		});
 		
@@ -178,8 +222,9 @@ public class CrimeFragment extends Fragment {
 		else if (requestCode == REQUEST_PHOTO) {
 			// Create a new photo object and attach it to the crime
 			String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
-			Log.i(TAG, "Photo taken success");
 			if (filename != null) {
+				// Delete old photo if it exists
+				deleteOldPhoto();
 				// Set the new photo on the current Crime
 				Photo photo = new Photo(filename);
 				mCrime.setPhoto(photo);
@@ -201,6 +246,7 @@ public class CrimeFragment extends Fragment {
 			}
 			return true;
 		case R.id.menu_item_delete_crime:
+			deleteOldPhoto();
 			CrimeLab.get(getActivity()).deleteCrime(mCrime);
 			getActivity().finish();											//Go back to the parent activity upon deletion
 			return true;
@@ -214,13 +260,13 @@ public class CrimeFragment extends Fragment {
 		super.onPause();	
 		CrimeLab.get(getActivity()).saveCrime();
 		
-		//Saved to external storage
-		File file = null;
-		if ((file = getActivity().getExternalFilesDir(null)) != null) {		//Check to see if external storage is available
-			CrimeLab.get(getActivity()).saveToExternal();
-		} else {
-			Log.d(TAG, "External storage not available");
-		}
+//		//Saved to external storage
+//		File file = null;
+//		if ((file = getActivity().getExternalFilesDir(null)) != null) {		//Check to see if external storage is available
+//			CrimeLab.get(getActivity()).saveToExternal();
+//		} else {
+//			Log.d(TAG, "External storage not available");
+//		}
 	}
 	
 	@Override
@@ -251,5 +297,14 @@ public class CrimeFragment extends Fragment {
 	public void onStop() {
 		super.onStop();
 		PictureUtils.cleanImageView(mPhotoView);	//Release the memory given to the imageView object
+	}
+	
+	private void deleteOldPhoto() {
+		if (mCrime.getPhoto() != null) {
+			getActivity().deleteFile(mCrime.getPhoto().getFilename());
+			mCrime.setPhoto(null);
+			PictureUtils.cleanImageView(mPhotoView);
+			Log.d(TAG, "Deleted photo");
+		}
 	}
 }
