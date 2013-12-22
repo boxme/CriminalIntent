@@ -12,18 +12,23 @@ public class Crime {
 	private static final String JSON_SOLVED = "solved";
 	private static final String JSON_DATE = "date";
 	private static final String JSON_PHOTO = "photo";
+	private static final String JSON_SUSPECT = "suspect";
+	private static final String JSON_SUSPECT_NUM = "contact";
 	
 	private UUID mID;
 	private String mTitle;
 	private Date mDate;
 	private boolean mSolved;
 	private Photo mPhoto;
+	private String mSuspect;
+	private String mContactNumber;
 	
 	public Crime() {
 		//Generate unique identifier
 		mID = UUID.randomUUID();
 		mDate = new Date();
 		mPhoto = null;
+		mContactNumber = null;
 	}
 	
 	public Crime(JSONObject json) throws JSONException {	//Loading back from json object
@@ -34,6 +39,12 @@ public class Crime {
 		if (json.has(JSON_PHOTO)) {
 			mPhoto = new Photo(json.getJSONObject(JSON_PHOTO));
 		}
+		if (json.has(JSON_SUSPECT)) {
+			mSuspect = json.getString(JSON_SUSPECT);
+		}
+		if (json.has(JSON_SUSPECT_NUM)) {
+			mContactNumber = json.getString(JSON_SUSPECT_NUM);
+		}
 	}
 	
 	public JSONObject toJSON() throws JSONException {		//Convert crime object into json object
@@ -42,10 +53,11 @@ public class Crime {
 		json.put(JSON_TITLE, mTitle);
 		json.put(JSON_SOLVED, mSolved);
 		json.put(JSON_DATE, mDate.getTime());
+		json.put(JSON_SUSPECT, mSuspect);
+		json.put(JSON_SUSPECT_NUM, mContactNumber);
 		if (mPhoto != null) {
 			json.put(JSON_PHOTO, mPhoto.toJSON());
-		}
-		
+		}		
 		return json;
 	}
 	
@@ -96,5 +108,21 @@ public class Crime {
 	
 	public void setPhoto(Photo photo) {
 		mPhoto = photo;
+	}
+	
+	public String getSuspect() {
+		return mSuspect;
+	}
+	
+	public void setSuspect(String suspect) {
+		mSuspect = suspect;
+	}
+	
+	public String getPhoneNum() {
+		return mContactNumber;
+	}
+	
+	public void setPhoneNum(String phoneNum) {
+		mContactNumber = phoneNum;
 	}
 }
