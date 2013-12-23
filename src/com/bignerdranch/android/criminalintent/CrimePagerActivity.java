@@ -16,9 +16,14 @@ import android.support.v4.view.ViewPager;
 
 /*To handle swiping forward and backward*/
 
-public class CrimePagerActivity extends FragmentActivity {
+public class CrimePagerActivity extends FragmentActivity implements CrimeFragment.Callback {
 	private ViewPager mViewPager;
 	private ArrayList<Crime> mCrimes;
+	
+	@Override
+	public void onCrimeUpdated(Crime crime) {
+		//Does nothing. This is for Phone UI
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

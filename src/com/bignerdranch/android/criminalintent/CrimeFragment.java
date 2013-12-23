@@ -56,6 +56,26 @@ public class CrimeFragment extends Fragment {
 	private ImageView mPhotoView;
 	private Button mSuspectButton;
 	private ActionMode.Callback mActionModeCallback;
+	private Callback mCallback;
+	
+	/*
+	 * Required interface for hosting activities
+	 */
+	public interface Callback {
+		void onCrimeUpdated(Crime crime);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mCallback = (Callback) activity;
+	}
+	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallback = null;
+	}
 	
 	public static CrimeFragment newInstance(UUID crimeId) {     //Use this to instantiate CrimeFragment instead of its constructor
 		Bundle args = new Bundle();
@@ -98,6 +118,8 @@ public class CrimeFragment extends Fragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				mCrime.setTitle(s.toString());
+				mCallback.onCrimeUpdated(mCrime);
+				getActivity().setTitle(s.toString());
 			}
 			
 			@Override
@@ -137,6 +159,7 @@ public class CrimeFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// Set the crime's solved property
 				mCrime.setSolved(isChecked);
+				mCallback.onCrimeUpdated(mCrime);
 			}
 		});
 		
@@ -247,7 +270,7 @@ public class CrimeFragment extends Fragment {
 		callButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Intent.ACTION_DIAL);
+				Intent intent = new Intent(Intent.ACTION_DIAL);					//Use ACTION_DIAL over ACTION_CALL
 				if (mCrime.getPhoneNum() != null) {
 					intent.setData(Uri.parse("tel:" + mCrime.getPhoneNum()));
 					startActivity(intent);
@@ -265,6 +288,7 @@ public class CrimeFragment extends Fragment {
 		if (requestCode == REQUEST_DATE) {
 			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
+			mCallback.onCrimeUpdated(mCrime);
 			updateDate();
 		} 
 		else if (requestCode == REQUEST_PHOTO) {
@@ -276,6 +300,7 @@ public class CrimeFragment extends Fragment {
 				// Set the new photo on the current Crime
 				Photo photo = new Photo(filename);
 				mCrime.setPhoto(photo);
+				mCallback.onCrimeUpdated(mCrime);
 				showPhoto();
 			}
 		}
@@ -328,7 +353,8 @@ public class CrimeFragment extends Fragment {
 			}
 			
 			mCrime.setSuspect(suspect);
-			mSuspectButton.setText(mCrime.getSuspect());
+			mCallback.onCrimeUpdated(mCrime);											//Update the list at the same time
+			mSuspectButton.setText(suspect);
 			cursor.close();
 		} 
 	}

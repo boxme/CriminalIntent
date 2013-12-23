@@ -8,10 +8,14 @@ import android.support.v4.app.FragmentManager;
 public abstract class SingleFragmentActivity extends FragmentActivity {
 	protected abstract Fragment createFragment();							//Abstract method for subclasses to instantiate the fragment
 	
+	protected int getLayoutResID() {										//Subclasses can overrride this method
+		return R.layout.activity_fragment;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_fragment);
+		setContentView(getLayoutResID());
 		
 		FragmentManager fm = getSupportFragmentManager();					//Get the activity's fragmentManager
 		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);	//If the fragment is already in the list, return it
